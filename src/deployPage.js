@@ -1,0 +1,62 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import deploy from './ethereum/deploy';
+// import { deployContract } from './ethereum/deploy';
+
+const DeployPage = () => {
+  const history = useNavigate();
+  const [amount, setAmount] = useState('');
+  const [contractAddress, setContractAddress] = useState('');
+
+  const handleDeploy = async (e) => {
+    e.preventDefault();
+    const address = await deploy(amount);
+    setContractAddress(address);
+    history.push(`/contract/${contractAddress}`);
+  };
+
+  const handleNavigate = () => {
+    history.push(`/contract/${contractAddress}`);
+  };
+
+  // 從 Local Storage 取回收據地址
+  const storedAddress = localStorage.getItem('receiptAddress');
+
+  return (
+    <div>
+      <h1>Deploy Page</h1>
+      <form onSubmit={handleDeploy}>
+        <label>
+          Amount:
+          <input type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
+        </label>
+        <button type="submit">Deploy Contract</button>
+      </form>
+
+      {storedAddress && (
+        <div>
+          <p>Contract deployed at address: {storedAddress}</p>
+          <button onClick={() => history.push(`/contract/${storedAddress}`)}>Go to Contract Page</button>
+        </div>
+      )}
+
+
+      {contractAddress && (
+        <div>
+          <p>Contract deployed at address: {contractAddress}</p>
+          <button onClick={handleNavigate}>Go to Contract Page</button>
+        </div>
+      )}
+
+      <form onSubmit={handleNavigate}>
+        <label>
+          Existing Contract Address:
+          <input type="text" value={contractAddress} onChange={(e) => setContractAddress(e.target.value)} />
+        </label>
+        <button type="submit">Go to Contract Page</button>
+      </form>
+    </div>
+  );
+};
+
+export default DeployPage;
