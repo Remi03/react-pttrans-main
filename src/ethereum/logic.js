@@ -100,6 +100,18 @@ const prePay = async (value) => {
     return receipt;
   };
   
+  const getContractInfo = async () => {
+    const info = {
+      payee: await payee(),
+      payer: await payer(),
+      amount: await amount(),
+      deadline: await deadline(),
+      status: await checkContractStatus()
+    };
+    return info;
+  };
+
+
   module.exports = {
     payee,
     payer,
@@ -110,6 +122,7 @@ const prePay = async (value) => {
     terminateContract,
     prePay,
     shipItem,
-    confirmReceived
+    confirmReceived,
+    getContractInfo
   };
   

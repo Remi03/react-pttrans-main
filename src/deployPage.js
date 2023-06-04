@@ -4,7 +4,7 @@ import deploy from './ethereum/deploy';
 // import { deployContract } from './ethereum/deploy';
 
 const DeployPage = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [amount, setAmount] = useState('');
   const [contractAddress, setContractAddress] = useState('');
 
@@ -12,11 +12,16 @@ const DeployPage = () => {
     e.preventDefault();
     const address = await deploy(amount);
     setContractAddress(address);
-    history.push(`/contract/${contractAddress}`);
+    console.log("address",address)
+    navigate(`/contract/${address}`);
+
+    // history.push(`/contract/${contractAddress}`);
   };
 
   const handleNavigate = () => {
-    history.push(`/contract/${contractAddress}`);
+    console.log("address",contractAddress)
+    navigate(`/contract/${contractAddress}`);
+    // navigate(`/contract`);
   };
 
   // 從 Local Storage 取回收據地址
@@ -30,13 +35,14 @@ const DeployPage = () => {
           Amount:
           <input type="number" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </label>
-        <button type="submit">Deploy Contract</button>
+        <button type="submit" disabled={amount === null || amount === ''}>Deploy Contract</button>
       </form>
 
       {storedAddress && (
         <div>
           <p>Contract deployed at address: {storedAddress}</p>
-          <button onClick={() => history.push(`/contract/${storedAddress}`)}>Go to Contract Page</button>
+          {/* <button onClick={() => navigate(`/contract`)}>Go to Contract Page</button> */}
+          <button onClick={() => navigate(`/contract/${storedAddress}`)}>Go to Contract Page</button>
         </div>
       )}
 
